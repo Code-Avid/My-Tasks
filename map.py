@@ -1,11 +1,10 @@
 from pathlib import Path
 
-
 # مسیر ریشه پروژه؛ چون اسکریپت داخل خود پروژه قرار دارد.
 PROJECT_ROOT = Path(__file__).resolve().parent
 
 # مسیر فایل map.txt که باید ساختار پروژه داخل آن ذخیره شود.
-MAP_FILE = PROJECT_ROOT / "map_atuo.txt"
+MAP_FILE = PROJECT_ROOT / "map_auto.txt"
 
 # پوشه‌ها و فایل‌هایی که نمی‌خواهیم در ساختار نمایش داده شوند.
 IGNORED_NAMES = {
