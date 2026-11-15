@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% from "_macros.html" import task_card %}
+{% block title %}{{ project.name }}{% endblock %}
+
+{% block content %}
+<div class="page-head">
+    <div>
+        <a class="back-link" href="{{ url_for('projects.list_projects') }}">
+            <i class="bi bi-arrow-right"></i> همه‌ی پروژه‌ها
+        </a>
+        <h1 class="page-title" dir="auto"><i class="bi bi-folder2-open"></i> {{ project.name }}</h1>
+        <small class="muted">{{ done }} از {{ total }} تسک انجام شده</small>
+    </div>
+
+    <a class="btn-neon small" href="{{ url_for('tasks.done', project=project.id) }}">
+        <i class="bi bi-check2-circle"></i> انجام‌شده‌های این پروژه ({{ done }})
+    </a>
+</div>
+
+<form class="add-panel" method="post" action="{{ url_for('tasks.add_task') }}">
+    <input type="hidden" name="kind" value="project">
+    <input type="hidden" name="project_id" value="{{ project.id }}">
+    <div class="add-bar">
+        <i class="bi bi-plus-circle-fill add-icon"></i>
+        <input type="text" name="title" dir="auto" placeholder="مرحله‌ی بعدی پروژه چیه؟"
+               required autofocus autocomplete="off">
+        <button class="btn-neon" type="submit">افزودن</button>
+    </div>
+</form>
+
+<div class="row g-4">
+    {% for item in items %}
+        {{ task_card(item) }}
+    {% else %}
+    <div class="col-12">
+        <div class="empty-state">
+            <i class="bi bi-trophy-fill"></i>
+            {% if total %}
+            <p>همه‌ی مرحله‌های این پروژه انجام شده! مرحله‌ی بعدی رو بنویس.</p>
+            {% else %}
+            <p>این پروژه هنوز تسکی نداره. اولین مرحله رو بنویس!</p>
+            {% endif %}
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

@@ -1,0 +1,209 @@
+{% extends "base.html" %}
+{% block title %}تنظیمات{% endblock %}
+
+{% block head_extra %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/settings.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="page-head">
+    <div>
+        <h1 class="page-title"><i class="bi bi-gear-fill"></i> تنظیمات</h1>
+        <small class="muted">ظاهر برنامه رو با ۳ رنگ خودت بساز.</small>
+    </div>
+</div>
+
+{% if message %}
+<div class="set-msg {{ message[0] }}">{{ message[1] }}</div>
+{% endif %}
+
+<div class="set-tabs">
+    <button type="button" class="set-tab active" data-tab="theme">
+        <i class="bi bi-palette-fill"></i> تم رنگی
+    </button>
+    <button type="button" class="set-tab" data-tab="help">
+        <i class="bi bi-question-circle-fill"></i> راهنما
+    </button>
+</div>
+
+<!-- ============================== تب ۱: تم رنگی ============================== -->
+<section class="set-panel active" id="tab-theme">
+
+    <h2 class="section-title"><i class="bi bi-collection-fill"></i> تم‌ها</h2>
+    <div class="theme-grid">
+        {% for th in themes %}
+        <article class="theme-card {% if th.id == theme.id %}is-active{% endif %}">
+            <span class="theme-tag">{{ 'پیش‌فرض' if th.builtin else 'کاستوم' }}</span>
+
+            <div class="swatches" title="پس‌زمینه / اصلی / تأکیدی">
+                <span style="background: {{ th.bg }}"></span>
+                <span style="background: {{ th.main }}"></span>
+                <span style="background: {{ th.accent }}"></span>
+            </div>
+
+            <h3 class="theme-name" dir="auto">{{ th.name }}</h3>
+            <div class="theme-codes">{{ th.bg }} · {{ th.main }} · {{ th.accent }}</div>
+
+            <div class="theme-actions">
+                {% if th.id == theme.id %}
+                <span class="active-badge"><i class="bi bi-check-circle-fill"></i> فعال</span>
+                {% else %}
+                <form method="post" action="{{ url_for('settings.apply_theme', theme_id=th.id) }}">
+                    <button class="btn-neon small" type="submit">اعمال</button>
+                </form>
+                {% endif %}
+
+                <button type="button" class="btn-neon small js-load"
+                        data-name="{{ th.name }}" data-bg="{{ th.bg }}"
+                        data-main="{{ th.main }}" data-accent="{{ th.accent }}"
+                        title="رنگ‌های این تم رو بیار توی ویرایشگر">
+                    <i class="bi bi-pencil-fill"></i> ویرایش
+                </button>
+
+                {% if not th.builtin %}
+                <form method="post" action="{{ url_for('settings.delete_theme', theme_id=th.id) }}"
+                      onsubmit="return confirm('این تم حذف شود؟')">
+                    <button class="icon-btn danger" type="submit" title="حذف تم">
+                        <i class="bi bi-trash3-fill"></i>
+                    </button>
+                </form>
+                {% endif %}
+            </div>
+        </article>
+        {% endfor %}
+    </div>
+
+    <h2 class="section-title"><i class="bi bi-eyedropper"></i> ساخت تم کاستوم</h2>
+
+    <form id="themeForm" method="post" action="{{ url_for('settings.save_theme') }}">
+        <div class="editor-grid">
+
+            <!-- ورودی ۳ رنگ -->
+            <div class="glass-box editor-box">
+                <label class="field">
+                    <span>نام تم</span>
+                    <input type="text" id="themeName" name="name" dir="auto" maxlength="40"
+                           placeholder="مثلاً: شب‌های تابستون" autocomplete="off">
+                </label>
+
+                {% set roles = [
+                    ('bg',     'رنگ ۱ · پس‌زمینه', 'صفحه، کارت‌ها و متن‌ها بر اساس این ساخته می‌شن', theme.bg),
+                    ('main',   'رنگ ۲ · اصلی',      'گرادیان‌ها، برچسب‌ها و رنگ سطح کارت‌ها',        theme.main),
+                    ('accent', 'رنگ ۳ · تأکیدی',    'دکمه‌ها، لینک فعال و درخشش نئونی',              theme.accent)
+                ] %}
+                {% for role, label, hint, value in roles %}
+                <div class="color-row" data-role="{{ role }}">
+                    <div class="cr-title">
+                        <strong>{{ label }}</strong>
+                        <small class="muted">{{ hint }}</small>
+                    </div>
+                    <div class="cr-inputs">
+                        <input type="color" class="cr-picker" value="{{ value }}" aria-label="انتخاب رنگ">
+                        <label class="cr-field">
+                            <small>HEX</small>
+                            <input type="text" class="cr-hex" name="c_{{ role }}" value="{{ value }}"
+                                   maxlength="7" spellcheck="false" autocomplete="off" placeholder="#a855f7">
+                        </label>
+                        <label class="cr-field">
+                            <small>RGB</small>
+                            <input type="text" class="cr-rgb" maxlength="15" spellcheck="false"
+                                   autocomplete="off" placeholder="168, 85, 247">
+                        </label>
+                    </div>
+                </div>
+                {% endfor %}
+
+                <div class="editor-actions">
+                    <button class="btn-neon" type="submit">
+                        <i class="bi bi-save-fill"></i> ذخیره و اعمال
+                    </button>
+                    <button class="btn-neon small" type="button" id="resetBtn">
+                        <i class="bi bi-arrow-counterclockwise"></i> بازنشانی
+                    </button>
+                </div>
+            </div>
+
+            <!-- نمونه‌ی زنده -->
+            <div class="glass-box editor-box">
+                <div class="preview-head">
+                    <h3><i class="bi bi-eye-fill"></i> نمونه‌ی زنده</h3>
+                    <div class="pv-modes">
+                        <button type="button" data-pmode="dark"><i class="bi bi-moon-stars-fill"></i> شب</button>
+                        <button type="button" data-pmode="light"><i class="bi bi-sun-fill"></i> روز</button>
+                    </div>
+                </div>
+
+                <div class="preview-box" id="themePreview">
+                    <div class="pv-top">
+                        <span class="pv-brand">
+                            <i class="bi bi-controller brand-icon"></i>
+                            <span class="brand-text">تسک‌های من</span>
+                        </span>
+                        <span class="player-level">سطح ۳</span>
+                    </div>
+
+                    <div class="xp-bar"><div class="xp-fill" style="width: 62%"></div></div>
+
+                    <div class="pv-row">
+                        <span class="chip active">فعال</span>
+                        <span class="chip">معمولی</span>
+                        <button type="button" class="btn-neon small"><i class="bi bi-plus-lg"></i> دکمه نئونی</button>
+                    </div>
+
+                    <article class="task-card kind-project">
+                        <header class="card-top">
+                            <button type="button" class="check-btn"><i class="bi bi-check-lg"></i></button>
+                            <h3 class="task-title" dir="auto">نوشتن منوی ربات تلگرام</h3>
+                        </header>
+                        <div class="card-meta">
+                            <span class="kind-badge project"><i class="bi bi-folder-fill"></i> پروژه</span>
+                            <span class="kind-badge weekly"><i class="bi bi-calendar-week"></i> هفتگی</span>
+                            <span class="kind-badge daily"><i class="bi bi-arrow-repeat"></i> روزانه</span>
+                        </div>
+                        <div class="card-progress">
+                            <div class="xp-bar"><div class="xp-fill" style="width: 50%"></div></div>
+                            <small class="muted">۲ از ۴ زیرتسک · ۵۰٪</small>
+                        </div>
+                    </article>
+
+                    <article class="task-card kind-random is-done">
+                        <header class="card-top">
+                            <button type="button" class="check-btn"><i class="bi bi-check-lg"></i></button>
+                            <h3 class="task-title" dir="auto">Read the docs</h3>
+                            <button type="button" class="icon-btn danger"><i class="bi bi-trash3-fill"></i></button>
+                        </header>
+                        <div class="card-progress">
+                            <div class="xp-bar"><div class="xp-fill" style="width: 100%"></div></div>
+                            <small class="muted">انجام شد ✔</small>
+                        </div>
+                    </article>
+
+                    <p class="muted" style="margin:0">متن کم‌رنگ · <span style="color: var(--text)">متن اصلی</span></p>
+                </div>
+                <p class="preview-note" id="previewNote"></p>
+            </div>
+        </div>
+    </form>
+</section>
+
+<!-- ============================== تب ۲: راهنما ============================== -->
+<section class="set-panel" id="tab-help">
+    <div class="glass-box editor-box">
+        <h3><i class="bi bi-lightbulb-fill"></i> این تنظیمات چطور کار می‌کنه؟</h3>
+        <ul class="help-list">
+            <li>کل ظاهر برنامه از <strong>۳ رنگ</strong> ساخته می‌شه: پس‌زمینه، اصلی، تأکیدی. بقیه (متن، کارت‌ها، حاشیه‌ها، درخشش) خودکار از همین ۳ رنگ محاسبه می‌شن.</li>
+            <li>هر رنگ رو به سه روش می‌تونی بنویسی: <strong>انتخاب‌گر رنگ</strong>، کد <strong>HEX</strong> مثل <code>#a855f7</code> (با یا بدون #، سه‌رقمی هم قبوله) یا کد <strong>RGB</strong> مثل <code>168, 85, 247</code>. هر سه با هم هماهنگ می‌مونن.</li>
+            <li>تا قبل از «ذخیره و اعمال» فقط توی نمونه‌ی زنده دیده می‌شه و روی برنامه اثری نداره.</li>
+            <li>تم ذخیره‌شده توی دیتابیس (<code>tasks.db</code>) می‌مونه و بعد از بستن برنامه هم برقراره.</li>
+            <li>دکمه‌ی «ویرایش» روی هر تم، رنگ‌هاش رو میاره توی ویرایشگر تا از روش یک تم جدید بسازی. تم‌های پیش‌فرض تغییر نمی‌کنن.</li>
+            <li>دکمه‌ی حالت شب/روز توی منو، نسخه‌ی مقابل همون تم رو نشون می‌ده. وقتی تم جدید اعمال کنی، حالت طبیعی خودش (تیره یا روشن) میاد.</li>
+            <li>اگه رنگ اصلی یا تأکیدی روی پس‌زمینه خیلی کم‌رنگ باشه (مثلاً سفید روی صورتی)، برای خوانایی کمی تیره‌تر/روشن‌تر نمایش داده می‌شه و زیر نمونه بهت می‌گه.</li>
+            <li>رنگ «انجام شد» (سبز) و «حذف» (قرمز) ثابت‌ان تا معنی‌شون همیشه واضح بمونه.</li>
+        </ul>
+    </div>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/settings.js') }}"></script>
+{% endblock %}

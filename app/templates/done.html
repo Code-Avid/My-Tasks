@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+{% from "_macros.html" import task_card %}
+{% block title %}انجام‌شده‌ها{% endblock %}
+
+{% block content %}
+<div class="page-head">
+    <div>
+        <h1 class="page-title"><i class="bi bi-check2-circle"></i> انجام‌شده‌ها</h1>
+        <small class="muted">
+            {{ total }} مورد
+            {% if project %}· پروژه: <span dir="auto">{{ project.name }}</span>{% endif %}
+        </small>
+    </div>
+
+    <div class="chips">
+        <a class="chip {% if kind == 'all' and not project %}active{% endif %}"
+           href="{{ url_for('tasks.done') }}">همه</a>
+        <a class="chip {% if kind == 'routine' %}active{% endif %}"
+           href="{{ url_for('tasks.done', kind='routine') }}">روتین امروز</a>
+        <a class="chip {% if kind == 'random' %}active{% endif %}"
+           href="{{ url_for('tasks.done', kind='random') }}">رندم</a>
+        <a class="chip {% if kind == 'project' %}active{% endif %}"
+           href="{{ url_for('tasks.done', kind='project') }}">پروژه‌ها</a>
+    </div>
+</div>
+
+<p class="muted done-hint">
+    برای برگرداندن یک تسک به لیست انجام‌نشده‌ها، دوباره روی دکمه‌ی تیکش بزن.
+</p>
+
+{% if routines %}
+<h2 class="section-title"><i class="bi bi-arrow-repeat"></i> روتین‌های انجام‌شده‌ی امروز ({{ routines|length }})</h2>
+<div class="row g-4 mb-5">
+    {% for item in routines %}{{ task_card(item) }}{% endfor %}
+</div>
+{% endif %}
+
+{% if randoms %}
+<h2 class="section-title"><i class="bi bi-dice-5-fill"></i> رندم ({{ randoms|length }})</h2>
+<div class="row g-4 mb-5">
+    {% for item in randoms %}{{ task_card(item) }}{% endfor %}
+</div>
+{% endif %}
+
+{% if projs %}
+<h2 class="section-title"><i class="bi bi-folder-fill"></i> پروژه‌ها ({{ projs|length }})</h2>
+<div class="row g-4 mb-5">
+    {% for item in projs %}{{ task_card(item) }}{% endfor %}
+</div>
+{% endif %}
+
+{% if total == 0 %}
+<div class="empty-state">
+    <i class="bi bi-hourglass-split"></i>
+    <p>هنوز چیزی انجام نشده. برو سراغ ماموریت‌ها!</p>
+</div>
+{% endif %}
+{% endblock %}

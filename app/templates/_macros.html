@@ -1,0 +1,114 @@
+{# کارت تسک: برای همه‌ی انواع (روزانه، هفتگی، پروژه، رندم)
+   cats: لیست دسته‌ها (اختیاری). اگه داده بشه، روی تسک‌های رندم انتخاب‌گر دسته میاد #}
+{% macro task_card(item, cats=[]) %}
+{% set t = item.task %}
+<div class="col-12 col-md-6 col-xxl-4">
+    <article class="task-card kind-{{ t.kind }} {% if item.done %}is-done{% endif %}">
+
+        <header class="card-top">
+            <form method="post" action="{{ url_for('tasks.toggle_task', task_id=t.id) }}">
+                <button class="check-btn" type="submit"
+                        title="{% if item.done %}برگردون به انجام‌نشده‌ها{% else %}انجام شد{% endif %}">
+                    <i class="bi bi-check-lg"></i>
+                </button>
+            </form>
+
+            <h3 class="task-title" dir="auto">{{ t.title }}</h3>
+
+            <form method="post" action="{{ url_for('tasks.delete_task', task_id=t.id) }}"
+                  onsubmit="return confirm('{% if item.recurring %}این روتین و کل تاریخچه‌اش حذف شود؟{% else %}این تسک حذف شود؟{% endif %}')">
+                <button class="icon-btn danger" type="submit" title="حذف">
+                    <i class="bi bi-trash3-fill"></i>
+                </button>
+            </form>
+        </header>
+
+        <div class="card-meta">
+            <span class="kind-badge {{ t.kind }}">
+                {% if t.kind == 'daily' %}
+                    <i class="bi bi-arrow-repeat"></i> روزانه
+                {% elif t.kind == 'weekly' %}
+                    <i class="bi bi-calendar-week"></i> {{ item.schedule }}
+                {% elif t.kind == 'project' %}
+                    <i class="bi bi-folder-fill"></i> <span dir="auto">{{ t.project_name }}</span>
+                {% else %}
+                    <i class="bi bi-dice-5-fill"></i> رندم
+                {% endif %}
+            </span>
+
+            {% if t.kind == 'random' and t.category_name %}
+            <span class="kind-badge cat c{{ t.category_color }}">
+                <i class="bi bi-tag-fill"></i> <span dir="auto">{{ t.category_name }}</span>
+            </span>
+            {% endif %}
+        </div>
+
+        <div class="card-progress">
+            <div class="xp-bar"><div class="xp-fill" style="width: {{ item.pct }}%"></div></div>
+            <small class="muted">
+                {% if item.recurring %}
+                    {% if item.done %}امروز انجام شد ✔{% else %}امروز هنوز انجام نشده{% endif %}
+                    · {{ item.times }} بار تا الان
+                {% else %}
+                    {% if item.total %}{{ item.done_count }} از {{ item.total }} زیرتسک{% else %}بدون زیرتسک{% endif %}
+                    · {{ item.pct }}٪
+                {% endif %}
+            </small>
+        </div>
+
+        {% if not item.recurring %}
+        <details class="subs" {% if item.subtasks %}open{% endif %}>
+            <summary><i class="bi bi-diagram-3-fill"></i> زیرتسک‌ها</summary>
+
+            <ul class="subtask-list">
+                {% for s in item.subtasks %}
+                <li class="subtask {% if s.is_done %}is-done{% endif %}">
+                    <form method="post" action="{{ url_for('tasks.toggle_subtask', sub_id=s.id) }}">
+                        <button class="check-btn small" type="submit">
+                            <i class="bi bi-check-lg"></i>
+                        </button>
+                    </form>
+                    <span class="task-title" dir="auto">{{ s.title }}</span>
+                    <form method="post" action="{{ url_for('tasks.delete_subtask', sub_id=s.id) }}">
+                        <button class="icon-btn danger small" type="submit" title="حذف">
+                            <i class="bi bi-x-lg"></i>
+                        </button>
+                    </form>
+                </li>
+                {% endfor %}
+            </ul>
+
+            <form class="subtask-form" method="post"
+                  action="{{ url_for('tasks.add_subtask', task_id=t.id) }}">
+                <input type="text" name="title" dir="auto" placeholder="زیرتسک جدید..."
+                       required autocomplete="off">
+                <button class="btn-neon small" type="submit"><i class="bi bi-plus-lg"></i></button>
+            </form>
+        </details>
+        {% endif %}
+
+        {# جابه‌جایی بین دسته‌ها (فقط رندمِ انجام‌نشده) #}
+        {% if t.kind == 'random' and cats and not item.done %}
+        <form class="cat-move" method="post"
+              action="{{ url_for('tasks.set_category', task_id=t.id) }}">
+            <i class="bi bi-tag"></i>
+            <select name="category_id" dir="auto" onchange="this.form.submit()" title="تغییر دسته">
+                <option value="">بدون دسته</option>
+                {% for c in cats %}
+                <option value="{{ c.id }}" {% if c.id == t.category_id %}selected{% endif %}>{{ c.name }}</option>
+                {% endfor %}
+            </select>
+        </form>
+        {% endif %}
+
+        <footer class="card-foot">
+            <i class="bi bi-clock"></i>
+            <span class="date">{{ t.created_at }}</span>
+            {% if item.done and not item.recurring and t.completed_at %}
+            <i class="bi bi-check2-circle foot-done"></i>
+            <span class="date">{{ t.completed_at }}</span>
+            {% endif %}
+        </footer>
+    </article>
+</div>
+{% endmacro %}

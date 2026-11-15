@@ -1,0 +1,76 @@
+# ============================================================
+#  .gitignore — پروژه‌ی TaskApp (Flask + SQLite + PyInstaller)
+# ============================================================
+
+# ---------- محیط مجازی پایتون ----------
+venv/
+.venv/
+env/
+ENV/
+
+# ---------- کش و فایل‌های موقت پایتون ----------
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# ---------- دیتابیس و اطلاعات شخصی ----------
+# تسک‌ها و تم‌های تو داخل tasks.db هستن؛ نباید توی گیت برن
+tasks.db
+tasks.db-journal
+tasks.db-wal
+tasks.db-shm
+*.db
+*.sqlite
+*.sqlite3
+# نسخه‌های پشتیبان دستی (مثلاً tasks_backup.db یا tasks.db.bak)
+*.bak
+*backup*
+
+# ---------- خروجی ساخت exe (PyInstaller) ----------
+build/
+dist/
+*.spec
+*.exe
+
+# ---------- فایل‌های آفلاین دانلودشده ----------
+# با download_assets.bat دوباره ساخته می‌شن
+# اگه می‌خوای داخل گیت باشن (برای اجرای آفلاین بعد از clone)، این خط رو پاک کن
+app/static/vendor/
+
+# ---------- VS Code و ادیتورهای دیگه ----------
+.vscode/
+.idea/
+*.code-workspace
+*.swp
+*.swo
+*~
+
+# ---------- سیستم‌عامل ----------
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+.DS_Store
+
+# ---------- متغیرهای محرمانه (اگه بعداً اضافه شد) ----------
+.env
+.env.*
+*.key
+*.pem
+
+# ---------- لاگ‌ها ----------
+*.log
+logs/
+
+# ---------- فایل‌های موقت بچ ----------
+venv/.installed
+
+# ---------- فایل‌های مد نطر خودم ----------
+Local/
+map.py
+map.txt

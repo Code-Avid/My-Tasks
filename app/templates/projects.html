@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+{% block title %}پروژه‌ها{% endblock %}
+
+{% block content %}
+<div class="page-head">
+    <h1 class="page-title"><i class="bi bi-folder-fill"></i> پروژه‌ها</h1>
+</div>
+
+<form class="add-panel" method="post" action="{{ url_for('projects.add_project') }}">
+    <div class="add-bar">
+        <i class="bi bi-rocket-takeoff-fill add-icon"></i>
+        <input type="text" name="name" dir="auto" placeholder="اسم پروژه‌ی جدید... (مثلاً ربات تلگرام)"
+               required autocomplete="off">
+        <button class="btn-neon" type="submit">ساخت پروژه</button>
+    </div>
+</form>
+
+<div class="row g-4">
+    {% for p in projects %}
+    <div class="col-12 col-md-6 col-xxl-4">
+        <article class="task-card project-card kind-project">
+            <header class="card-top">
+                <i class="bi bi-folder2-open project-icon"></i>
+                <h3 class="task-title" dir="auto">
+                    <a class="project-link" href="{{ url_for('projects.detail', project_id=p.project.id) }}">
+                        {{ p.project.name }}
+                    </a>
+                </h3>
+                <form method="post" action="{{ url_for('projects.delete_project', project_id=p.project.id) }}"
+                      onsubmit="return confirm('پروژه و همه‌ی تسک‌هایش حذف شود؟')">
+                    <button class="icon-btn danger" type="submit" title="حذف">
+                        <i class="bi bi-trash3-fill"></i>
+                    </button>
+                </form>
+            </header>
+
+            <div class="card-progress">
+                <div class="xp-bar"><div class="xp-fill" style="width: {{ p.pct }}%"></div></div>
+                <small class="muted">{{ p.done }} از {{ p.total }} تسک · {{ p.pct }}٪</small>
+            </div>
+
+            <a class="btn-neon small" href="{{ url_for('projects.detail', project_id=p.project.id) }}">
+                <i class="bi bi-box-arrow-in-left"></i> ورود به پروژه
+            </a>
+
+            <footer class="card-foot">
+                <i class="bi bi-clock"></i>
+                <span class="date">{{ p.project.created_at }}</span>
+            </footer>
+        </article>
+    </div>
+    {% else %}
+    <div class="col-12">
+        <div class="empty-state">
+            <i class="bi bi-rocket-takeoff-fill"></i>
+            <p>هنوز پروژه‌ای نساختی. اولین پروژه‌ات رو شروع کن!</p>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

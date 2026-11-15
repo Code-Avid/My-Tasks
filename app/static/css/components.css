@@ -1,0 +1,167 @@
+/* ================= منوی کناری ================= */
+.brand {
+    display: flex;
+    align-items: center;
+    gap: .6rem;
+    font-size: 1.35rem;
+    font-weight: 800;
+}
+.brand-icon { font-size: 1.8rem; }
+
+.player-card {
+    padding: .9rem;
+    border-radius: 14px;
+    display: flex;
+    flex-direction: column;
+    gap: .4rem;
+}
+.player-top { display: flex; justify-content: space-between; font-weight: 700; }
+
+.side-nav { display: flex; flex-direction: column; gap: .35rem; }
+.side-link {
+    display: flex;
+    align-items: center;
+    gap: .7rem;
+    padding: .65rem .9rem;
+    border-radius: 12px;
+    text-decoration: none;
+    transition: all .2s ease;
+}
+.side-link.sub { padding: .45rem .9rem; font-size: .92rem; }
+.side-link .count {
+    margin-inline-start: auto;
+    padding: 0 .6rem;
+    border-radius: 999px;
+    font-size: .8rem;
+}
+.side-title { font-size: .8rem; opacity: .6; margin-top: .5rem; }
+.side-bottom { margin-top: auto; }
+
+/* ================= عناصر عمومی ================= */
+.page-head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+.page-title { font-size: 1.6rem; font-weight: 800; margin: 0; }
+.muted { opacity: .65; }
+.grow { flex: 1; display: flex; flex-direction: column; }
+
+.chips { display: flex; gap: .5rem; flex-wrap: wrap; }
+.chip {
+    padding: .35rem 1rem;
+    border-radius: 999px;
+    text-decoration: none;
+    font-size: .9rem;
+    transition: all .2s ease;
+}
+
+/* ---------- دکمه نئونی ---------- */
+.btn-neon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: .5rem;
+    padding: .55rem 1.3rem;
+    border-radius: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    background: transparent;
+    transition: all .2s ease;
+}
+.btn-neon.small { padding: .45rem .8rem; }
+
+/* ---------- نوار افزودن ---------- */
+.add-bar {
+    display: flex;
+    align-items: center;
+    gap: .75rem;
+    padding: .7rem 1rem;
+    border-radius: var(--radius);
+    margin-bottom: 2rem;
+}
+.add-bar input { flex: 1; background: transparent; border: none; outline: none; padding: .4rem; }
+.add-icon { font-size: 1.5rem; }
+
+/* ---------- نوار XP / پیشرفت ---------- */
+.xp-bar { height: 8px; border-radius: 99px; overflow: hidden; }
+.xp-fill { height: 100%; border-radius: 99px; transition: width .5s ease; }
+
+/* ================= کارت تسک ================= */
+.task-card {
+    height: 100%;
+    padding: 1.1rem;
+    border-radius: var(--radius);
+    display: flex;
+    flex-direction: column;
+    gap: .9rem;
+    position: relative;
+    overflow: hidden;
+    transition: transform .25s ease, box-shadow .25s ease;
+    animation: pop-in .4s ease both;
+}
+.task-card:hover { transform: translateY(-4px); }
+
+.card-top { display: flex; align-items: center; gap: .75rem; }
+.card-top .task-title { flex: 1; margin: 0; font-size: 1.05rem; font-weight: 700; word-break: break-word; }
+.card-progress { display: flex; flex-direction: column; gap: .35rem; }
+.card-foot { display: flex; align-items: center; gap: .4rem; font-size: .78rem; opacity: .55; margin-top: auto; }
+
+.check-btn {
+    flex-shrink: 0;
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    padding: 0;
+    cursor: pointer;
+    transition: all .2s ease;
+}
+.check-btn i { opacity: 0; transform: scale(.4); transition: all .2s ease; }
+.check-btn.small { width: 24px; height: 24px; font-size: .75rem; }
+
+.is-done > .card-top .check-btn i,
+.subtask.is-done .check-btn i { opacity: 1; transform: scale(1); }
+
+.is-done > .card-top .task-title,
+.subtask.is-done .task-title { text-decoration: line-through; opacity: .55; }
+
+.icon-btn { background: none; border: none; cursor: pointer; padding: .3rem; transition: all .2s ease; }
+.icon-btn:hover { transform: scale(1.2); }
+
+/* ---------- زیرتسک‌ها ---------- */
+.subs summary { cursor: pointer; font-size: .9rem; opacity: .8; list-style: none; user-select: none; }
+.subs summary::-webkit-details-marker { display: none; }
+.subtask-list { list-style: none; padding: 0; margin: .7rem 0; display: flex; flex-direction: column; gap: .5rem; }
+.subtask { display: flex; align-items: center; gap: .6rem; padding: .35rem .5rem; border-radius: 10px; }
+.subtask .task-title { flex: 1; font-size: .93rem; word-break: break-word; }
+.subtask-form { display: flex; gap: .5rem; }
+.subtask-form input { flex: 1; padding: .4rem .7rem; border-radius: 10px; outline: none; }
+
+/* ---------- حالت خالی ---------- */
+.empty-state { text-align: center; padding: 4rem 1rem; opacity: .7; }
+.empty-state i { font-size: 4rem; }
+
+/* ================= گزارش ================= */
+.stat-box { padding: 1.3rem; border-radius: var(--radius); text-align: center; }
+.stat-box i { font-size: 1.8rem; }
+.stat-num { font-size: 2.6rem; font-weight: 800; line-height: 1.2; }
+
+.glass-box { padding: 1.2rem; border-radius: var(--radius); height: 100%; }
+.box-title { font-size: 1.1rem; font-weight: 700; margin-bottom: 1rem; }
+
+.report-list { list-style: none; padding: 0; margin: 0; }
+.report-list li { display: flex; gap: 1rem; align-items: center; padding: .65rem 0; }
+.report-list .task-title { flex: 1; }
+.empty { opacity: .6; padding: 1rem 0; }
+.date { opacity: .6; direction: ltr; unicode-bidi: isolate; font-size: .8rem; }
+
+/* ================= انیمیشن ================= */
+@keyframes pop-in {
+    from { opacity: 0; transform: translateY(14px) scale(.98); }
+    to   { opacity: 1; transform: none; }
+}

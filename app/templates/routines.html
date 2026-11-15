@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% from "_macros.html" import task_card %}
+{% block title %}روتین‌ها{% endblock %}
+
+{% block content %}
+<div class="page-head">
+    <h1 class="page-title"><i class="bi bi-arrow-repeat"></i> همه‌ی روتین‌ها</h1>
+    <a class="btn-neon" href="{{ url_for('tasks.index') }}">
+        <i class="bi bi-plus-lg"></i> روتین جدید
+    </a>
+</div>
+
+<h2 class="section-title"><i class="bi bi-sun-fill"></i> روزانه ({{ daily|length }})</h2>
+<div class="row g-4 mb-5">
+    {% for item in daily %}
+        {{ task_card(item) }}
+    {% else %}
+    <div class="col-12"><div class="empty-mini">هنوز روتین روزانه‌ای نساختی.</div></div>
+    {% endfor %}
+</div>
+
+<h2 class="section-title"><i class="bi bi-calendar-week"></i> هفتگی ({{ weekly|length }})</h2>
+<div class="row g-4">
+    {% for item in weekly %}
+        {{ task_card(item) }}
+    {% else %}
+    <div class="col-12"><div class="empty-mini">هنوز روتین هفتگی‌ای نساختی.</div></div>
+    {% endfor %}
+</div>
+{% endblock %}

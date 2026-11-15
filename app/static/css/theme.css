@@ -1,0 +1,226 @@
+/* ====================================================================
+   theme.css — همه‌ی «استایل رنگی» پروژه
+
+   ⚠️ مهم: رنگ‌ها اینجا ثابت نیستن!
+   همه‌ی متغیرهای زیر (--bg, --card, --text, --n1 ... ) رو موتور تم
+   (static/js/theme-engine.js) از روی ۳ رنگِ تم فعال می‌سازه و روی <html> می‌ذاره:
+
+       رنگ ۱ · پس‌زمینه   → --bg  --bg-2  --card  --side  --text  --muted  --border  --input
+       رنگ ۲ · اصلی       → --n2   (و --on-n2)
+       رنگ ۳ · تأکیدی     → --n1   (و --on-n1)
+       ثابت (معنایی)      → --n3 = موفقیت/انجام شد ،  --n4 = خطر/حذف
+
+   مقادیر داخل :root فقط «پشتیبان» هستن (تم پیش‌فرض: مشکی، بنفش، فیروزه‌ای)
+   تا اگه جاوااسکریپت اجرا نشد، صفحه خوانا بمونه.
+
+   قانون: توی CSS هیچ رنگ ثابتی ننویس. همیشه از این متغیرها استفاده کن:
+       رنگ کامل:      var(--text)        rgb(var(--n1))
+       با شفافیت:     rgba(var(--n1), .5)
+       متن روی سطح رنگی:  var(--on-n1) / var(--on-n3) / var(--on-grad)
+   ==================================================================== */
+:root {
+    --bg:      rgb(7, 7, 13);
+    --bg-2:    rgb(22, 22, 30);
+    --card:    rgba(43, 30, 61, .72);
+    --side:    rgba(5, 5, 9, .92);
+    --text:    rgb(235, 235, 245);
+    --muted:   rgb(150, 150, 165);
+    --muted-rgb: 150, 150, 165;
+    --border:  rgba(190, 150, 230, .22);
+    --input:   rgba(255, 255, 255, .06);
+
+    /* رنگ‌ها به‌صورت «R, G, B» (برای rgba(var(--n1), .5)) */
+    --n1: 0, 229, 255;       /* رنگ ۳ · تأکیدی */
+    --n2: 168, 85, 247;      /* رنگ ۲ · اصلی */
+    --n3: 57, 255, 136;      /* موفقیت */
+    --n4: 255, 77, 109;      /* خطر */
+
+    /* رنگ متن روی سطح پرشده با هر رنگ (برای خوانایی) */
+    --on-n1: rgb(8, 10, 20);
+    --on-n2: rgb(255, 255, 255);
+    --on-n3: rgb(8, 10, 20);
+    --on-grad: rgb(8, 10, 20);
+
+    --glow: 1;               /* شدت درخشش نئونی */
+
+    /* عکس پس‌زمینه‌ی بعدی: url("../img/bg.png") */
+    --bg-image: none;
+}
+
+/* ================= پس‌زمینه ================= */
+body {
+    color: var(--text);
+    background-color: var(--bg);
+    background-image:
+        var(--bg-image),
+        radial-gradient(circle at 15% 10%, rgba(var(--n2), .16), transparent 40%),
+        radial-gradient(circle at 85% 90%, rgba(var(--n1), .16), transparent 40%),
+        linear-gradient(rgba(var(--n1), .04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(var(--n1), .04) 1px, transparent 1px);
+    background-size: cover, auto, auto, 40px 40px, 40px 40px;
+    background-attachment: fixed;
+}
+
+.muted { color: var(--muted); }
+
+/* ================= منو ================= */
+.sidebar {
+    background: var(--side);
+    backdrop-filter: blur(14px);
+    border-inline-start: 1px solid var(--border);
+    box-shadow: -4px 0 30px rgba(var(--n1), calc(.12 * var(--glow)));
+}
+.brand-text {
+    background: linear-gradient(90deg, rgb(var(--n1)), rgb(var(--n2)));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+}
+.brand-icon { color: rgb(var(--n1)); filter: drop-shadow(0 0 8px rgba(var(--n1), var(--glow))); }
+
+.player-card { background: var(--input); border: 1px solid var(--border); }
+.player-level { color: rgb(var(--n2)); text-shadow: 0 0 10px rgba(var(--n2), var(--glow)); }
+.player-xp { color: rgb(var(--n1)); }
+
+.side-link { color: var(--text); }
+.side-link:hover {
+    background: rgba(var(--n1), .1);
+    color: rgb(var(--n1));
+    transform: translateX(-4px);
+}
+.side-link.active {
+    background: rgba(var(--n1), .14);
+    color: rgb(var(--n1));
+    box-shadow: inset -3px 0 0 rgb(var(--n1)), 0 0 14px rgba(var(--n1), calc(.25 * var(--glow)));
+}
+.side-link .count { background: var(--input); }
+.side-link .count.warn { color: rgb(var(--n2)); }
+.side-link .count.ok   { color: rgb(var(--n3)); }
+
+.menu-toggle {
+    background: var(--side);
+    color: rgb(var(--n1));
+    border: 1px solid rgba(var(--n1), .5);
+    border-radius: 12px;
+    box-shadow: 0 0 12px rgba(var(--n1), calc(.4 * var(--glow)));
+}
+
+/* ================= دکمه نئونی ================= */
+.btn-neon {
+    color: rgb(var(--n1));
+    border: 2px solid rgb(var(--n1));
+    box-shadow: 0 0 10px rgba(var(--n1), calc(.45 * var(--glow))),
+                inset 0 0 10px rgba(var(--n1), calc(.15 * var(--glow)));
+    text-shadow: 0 0 8px rgba(var(--n1), calc(.8 * var(--glow)));
+}
+.btn-neon:hover {
+    background: rgb(var(--n1));
+    color: var(--on-n1);
+    text-shadow: none;
+    transform: translateY(-2px);
+    box-shadow: 0 0 22px rgba(var(--n1), var(--glow)),
+                0 0 44px rgba(var(--n1), calc(.5 * var(--glow)));
+}
+.btn-neon:active { transform: scale(.96); }
+
+/* ================= چیپ‌ها ================= */
+.chip {
+    color: var(--text);
+    background: var(--input);
+    border: 1px solid var(--border);
+}
+.chip:hover { border-color: rgb(var(--n2)); color: rgb(var(--n2)); }
+.chip.active {
+    color: var(--on-grad);
+    background: linear-gradient(90deg, rgb(var(--n2)), rgb(var(--n1)));
+    border-color: transparent;
+    box-shadow: 0 0 16px rgba(var(--n2), calc(.5 * var(--glow)));
+}
+
+/* ================= نوار افزودن ================= */
+.add-bar {
+    background: var(--card);
+    border: 1px solid var(--border);
+    backdrop-filter: blur(10px);
+    box-shadow: 0 0 20px rgba(var(--n2), calc(.12 * var(--glow)));
+}
+.add-bar:focus-within {
+    border-color: rgb(var(--n1));
+    box-shadow: 0 0 24px rgba(var(--n1), calc(.4 * var(--glow)));
+}
+.add-bar input { color: var(--text); }
+.add-bar input::placeholder, .subtask-form input::placeholder { color: var(--muted); }
+.add-icon { color: rgb(var(--n2)); filter: drop-shadow(0 0 6px rgba(var(--n2), var(--glow))); }
+
+/* ================= نوار XP ================= */
+.xp-bar { background: var(--input); }
+.xp-fill {
+    background: linear-gradient(90deg, rgb(var(--n1)), rgb(var(--n2)));
+    box-shadow: 0 0 10px rgba(var(--n1), var(--glow));
+}
+
+/* ================= کارت تسک ================= */
+.task-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    backdrop-filter: blur(10px);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, .15);
+}
+.task-card::before {
+    content: "";
+    position: absolute;
+    inset: 0 0 auto 0;
+    height: 3px;
+    background: linear-gradient(90deg, rgb(var(--n1)), rgb(var(--n2)));
+    opacity: .85;
+}
+.task-card:hover {
+    border-color: rgba(var(--n1), .6);
+    box-shadow: 0 0 26px rgba(var(--n1), calc(.3 * var(--glow)));
+}
+.task-card.is-done { border-color: rgba(var(--n3), .55); }
+.task-card.is-done::before { background: rgb(var(--n3)); }
+.task-card.is-done:hover { box-shadow: 0 0 26px rgba(var(--n3), calc(.35 * var(--glow))); }
+.task-card.is-done .xp-fill { background: rgb(var(--n3)); box-shadow: 0 0 10px rgba(var(--n3), var(--glow)); }
+
+.check-btn {
+    background: transparent;
+    border: 2px solid rgba(var(--n1), .7);
+    color: var(--on-n3);
+}
+.check-btn:hover { box-shadow: 0 0 14px rgba(var(--n1), var(--glow)); transform: scale(1.1); }
+.is-done > .card-top .check-btn,
+.subtask.is-done .check-btn {
+    background: rgb(var(--n3));
+    border-color: rgb(var(--n3));
+    box-shadow: 0 0 14px rgba(var(--n3), var(--glow));
+}
+
+.icon-btn { color: var(--muted); }
+.icon-btn.danger:hover { color: rgb(var(--n4)); filter: drop-shadow(0 0 6px rgba(var(--n4), var(--glow))); }
+
+.subs summary:hover { color: rgb(var(--n1)); }
+.subtask:hover { background: var(--input); }
+.subtask-form input {
+    background: var(--input);
+    border: 1px solid var(--border);
+    color: var(--text);
+}
+.subtask-form input:focus { border-color: rgb(var(--n1)); }
+
+.empty-state i { color: rgb(var(--n2)); filter: drop-shadow(0 0 12px rgba(var(--n2), var(--glow))); }
+
+/* ================= گزارش ================= */
+.stat-box, .glass-box {
+    background: var(--card);
+    border: 1px solid var(--border);
+    backdrop-filter: blur(10px);
+}
+.stat-box { box-shadow: 0 0 22px rgba(var(--n3), calc(.2 * var(--glow))); }
+.stat-box i, .stat-box .stat-num { color: rgb(var(--n3)); text-shadow: 0 0 14px rgba(var(--n3), var(--glow)); }
+.stat-box.alt { box-shadow: 0 0 22px rgba(var(--n2), calc(.2 * var(--glow))); }
+.stat-box.alt i, .stat-box.alt .stat-num { color: rgb(var(--n2)); text-shadow: 0 0 14px rgba(var(--n2), var(--glow)); }
+
+.box-title i { color: rgb(var(--n1)); }
+.report-list li { border-bottom: 1px solid var(--border); }
+.report-list li:last-child { border-bottom: none; }

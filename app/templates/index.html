@@ -1,0 +1,157 @@
+{% extends "base.html" %}
+{% from "_macros.html" import task_card %}
+
+{% block content %}
+<div class="page-head">
+    <div>
+        <h1 class="page-title"><i class="bi bi-lightning-charge-fill"></i> ماموریت‌های امروز</h1>
+        <small class="muted">{{ today_name }} · <span class="date">{{ today_date }}</span></small>
+    </div>
+    <a class="btn-neon small" href="{{ url_for('tasks.done') }}">
+        <i class="bi bi-check2-circle"></i> انجام‌شده‌ها ({{ stats.done_total }})
+    </a>
+</div>
+
+<!-- پیشرفت روتین‌های امروز -->
+{% if routines_total %}
+<div class="today-banner">
+    <div class="today-info">
+        <strong>روتین امروز</strong>
+        <span>{{ routines_done }} از {{ routines_total }}</span>
+    </div>
+    <div class="xp-bar">
+        <div class="xp-fill" style="width: {{ (routines_done * 100 / routines_total)|round|int }}%"></div>
+    </div>
+</div>
+{% endif %}
+
+<!-- فرم افزودن -->
+<form class="add-panel" id="addForm" method="post" action="{{ url_for('tasks.add_task') }}">
+    <div class="add-bar">
+        <i class="bi bi-plus-circle-fill add-icon"></i>
+        <input type="text" name="title" dir="auto" placeholder="یک ماموریت جدید بنویس..."
+               required autofocus autocomplete="off">
+        <button class="btn-neon" type="submit">افزودن</button>
+    </div>
+
+    <div class="kind-picker">
+        <label class="kind-chip">
+            <input type="radio" name="kind" value="random" checked>
+            <span><i class="bi bi-dice-5-fill"></i> رندم</span>
+        </label>
+        <label class="kind-chip">
+            <input type="radio" name="kind" value="daily">
+            <span><i class="bi bi-arrow-repeat"></i> روزانه</span>
+        </label>
+        <label class="kind-chip">
+            <input type="radio" name="kind" value="weekly">
+            <span><i class="bi bi-calendar-week"></i> هفتگی</span>
+        </label>
+
+        <!-- انتخاب دسته (فقط وقتی «رندم» انتخاب باشه) -->
+        <div class="cat-picker" id="catPicker">
+            <i class="bi bi-tag-fill"></i>
+            <select name="category_id" dir="auto" class="cat-select">
+                <option value="">بدون دسته</option>
+                {% for c in categories %}
+                <option value="{{ c.id }}">{{ c.name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+    </div>
+
+    <div class="days-picker is-hidden" id="daysPicker">
+        <div class="presets">
+            <button type="button" class="preset-btn" data-days="0,2,4">فرد (ش، ۲ش، ۴ش)</button>
+            <button type="button" class="preset-btn" data-days="1,3,5">زوج (۱ش، ۳ش، ۵ش)</button>
+            <button type="button" class="preset-btn" data-days="0,1,2,3,4,5,6">همه</button>
+            <button type="button" class="preset-btn" data-days="">پاک</button>
+        </div>
+        <div class="days">
+            {% for name in WEEKDAYS %}
+            <label class="day-chip">
+                <input type="checkbox" name="weekdays" value="{{ loop.index0 }}">
+                <span>{{ name }}</span>
+            </label>
+            {% endfor %}
+        </div>
+    </div>
+</form>
+
+<!-- روتین‌های امروز (فقط انجام‌نشده‌ها) -->
+<h2 class="section-title"><i class="bi bi-arrow-repeat"></i> روتین امروز</h2>
+<div class="row g-4 mb-5">
+    {% for item in routines %}
+        {{ task_card(item) }}
+    {% else %}
+    <div class="col-12">
+        {% if routines_total %}
+        <div class="empty-mini all-done">همه‌ی روتین‌های امروز انجام شد 🎉</div>
+        {% else %}
+        <div class="empty-mini">
+            برای امروز روتینی نیست. با گزینه‌ی «روزانه» یا «هفتگی» بالا یکی بساز.
+        </div>
+        {% endif %}
+    </div>
+    {% endfor %}
+</div>
+
+<!-- تسک‌های رندم (گروه‌بندی بر اساس دسته) -->
+<div class="section-head">
+    <h2 class="section-title"><i class="bi bi-dice-5-fill"></i> تسک‌های رندم</h2>
+
+    <form class="inline-form" method="post" action="{{ url_for('categories.add_category') }}">
+        <input type="text" name="name" dir="auto" maxlength="40" required
+               placeholder="دسته‌ی جدید..." autocomplete="off">
+        <button class="btn-neon small" type="submit"><i class="bi bi-plus-lg"></i> دسته</button>
+    </form>
+</div>
+
+{% for g in groups %}
+    {% set c = g.category %}
+    {% if c or g.cards %}
+    <section class="cat-group {% if c %}c{{ c.color }}{% else %}c0{% endif %}">
+        <header class="cat-head">
+            <span class="cat-dot"></span>
+            <h3 class="cat-name" dir="auto">{{ c.name if c else 'بدون دسته' }}</h3>
+            <span class="cat-count">{{ g.cards|length }}</span>
+
+            <form class="cat-add" method="post" action="{{ url_for('tasks.add_task') }}">
+                <input type="hidden" name="kind" value="random">
+                <input type="hidden" name="category_id" value="{{ c.id if c else '' }}">
+                <input type="text" name="title" dir="auto" required autocomplete="off"
+                       placeholder="افزودن به این دسته...">
+                <button class="btn-neon small" type="submit" title="افزودن">
+                    <i class="bi bi-plus-lg"></i>
+                </button>
+            </form>
+
+            {% if c %}
+            <form method="post" action="{{ url_for('categories.delete_category', category_id=c.id) }}"
+                  onsubmit="return confirm('دسته حذف شود؟ تسک‌هایش حذف نمی‌شوند و «بدون دسته» می‌شوند.')">
+                <button class="icon-btn danger" type="submit" title="حذف دسته">
+                    <i class="bi bi-trash3-fill"></i>
+                </button>
+            </form>
+            {% endif %}
+        </header>
+
+        <div class="row g-4">
+            {% for item in g.cards %}
+                {{ task_card(item, categories) }}
+            {% else %}
+            <div class="col-12"><div class="empty-mini">این دسته خالیه. بالا تسک جدید بنویس.</div></div>
+            {% endfor %}
+        </div>
+    </section>
+    {% endif %}
+{% endfor %}
+
+{% if randoms_count == 0 and not categories %}
+<div class="empty-state">
+    <i class="bi bi-trophy-fill"></i>
+    <p>هیچ ماموریت بازی نیست!
+       <a class="back-link" href="{{ url_for('tasks.done') }}">انجام‌شده‌ها رو ببین</a></p>
+</div>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,102 @@
+{% extends "base.html" %}
+{% block title %}گزارش{% endblock %}
+
+{% block content %}
+<div class="page-head">
+    <h1 class="page-title"><i class="bi bi-bar-chart-fill"></i> گزارش عملکرد</h1>
+    <div class="chips">
+        {% for key, label in periods.items() %}
+        <a class="chip {% if key == period %}active{% endif %}"
+           href="{{ url_for('reports.report', period=key) }}">{{ label }}</a>
+        {% endfor %}
+    </div>
+</div>
+
+<div class="row g-4 mb-4">
+    <div class="col-12 col-md-4">
+        <div class="stat-box">
+            <i class="bi bi-arrow-repeat"></i>
+            <div class="stat-num">{{ routine_total }}</div>
+            <div class="muted">انجام روتین</div>
+        </div>
+    </div>
+    <div class="col-6 col-md-4">
+        <div class="stat-box alt">
+            <i class="bi bi-check2-all"></i>
+            <div class="stat-num">{{ tasks|length }}</div>
+            <div class="muted">تسک پروژه/رندم</div>
+        </div>
+    </div>
+    <div class="col-6 col-md-4">
+        <div class="stat-box">
+            <i class="bi bi-diagram-3-fill"></i>
+            <div class="stat-num">{{ subtasks|length }}</div>
+            <div class="muted">زیرتسک</div>
+        </div>
+    </div>
+</div>
+
+<div class="row g-4">
+    <div class="col-12 col-xl-4">
+        <section class="glass-box">
+            <h2 class="box-title"><i class="bi bi-arrow-repeat"></i> روتین‌ها</h2>
+            <ul class="report-list">
+                {% for r in routines %}
+                <li>
+                    <div class="grow">
+                        <span class="task-title" dir="auto">{{ r.title }}</span>
+                        <small class="muted">
+                            {{ 'روزانه' if r.kind == 'daily' else 'هفتگی' }}
+                            · آخرین بار <span class="date">{{ r.last_date }}</span>
+                        </small>
+                    </div>
+                    <span class="times-badge">{{ r.c }}×</span>
+                </li>
+                {% else %}
+                <li class="empty">موردی نیست</li>
+                {% endfor %}
+            </ul>
+        </section>
+    </div>
+
+    <div class="col-12 col-xl-4">
+        <section class="glass-box">
+            <h2 class="box-title"><i class="bi bi-trophy-fill"></i> تسک‌های انجام‌شده</h2>
+            <ul class="report-list">
+                {% for t in tasks %}
+                <li>
+                    <div class="grow">
+                        <span class="task-title" dir="auto">{{ t.title }}</span>
+                        <small class="muted" dir="auto">
+                            {% if t.kind == 'project' %}پروژه: {{ t.project_name }}{% else %}رندم{% endif %}
+                        </small>
+                    </div>
+                    <small class="date">{{ t.completed_at }}</small>
+                </li>
+                {% else %}
+                <li class="empty">موردی نیست</li>
+                {% endfor %}
+            </ul>
+        </section>
+    </div>
+
+    <div class="col-12 col-xl-4">
+        <section class="glass-box">
+            <h2 class="box-title"><i class="bi bi-diagram-3-fill"></i> زیرتسک‌های انجام‌شده</h2>
+            <ul class="report-list">
+                {% for s in subtasks %}
+                <li>
+                    <div class="grow">
+                        <span class="task-title" dir="auto">{{ s.title }}</span>
+                        <small class="parent muted" dir="auto">از: {{ s.parent_title }}</small>
+                    </div>
+                    <small class="date">{{ s.completed_at }}</small>
+                </li>
+                {% else %}
+                <li class="empty">موردی نیست</li>
+                {% endfor %}
+            </ul>
+        </section>
+    </div>
+</div>
+{% endblock %}

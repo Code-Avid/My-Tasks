@@ -1,0 +1,288 @@
+/* ============ استایل قابلیت‌های روتین، پروژه، دسته‌بندی و انجام‌شده‌ها ============
+   قانون: اینجا رنگ ثابت ننویس. همه‌ی رنگ‌ها از متغیرهای theme.css میان
+   (که موتور تم از ۳ رنگِ تم فعال می‌سازه)، پس با عوض شدن تم خودکار عوض میشن. */
+
+.is-hidden { display: none !important; }
+
+.section-title {
+    font-size: 1.15rem;
+    font-weight: 800;
+    margin: 0 0 1rem;
+    display: flex;
+    align-items: center;
+    gap: .5rem;
+}
+.section-title i { color: rgb(var(--n1)); }
+
+.section-head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: .8rem;
+    margin-bottom: 1rem;
+}
+.section-head .section-title { margin: 0; }
+
+.empty-mini {
+    padding: 1.2rem;
+    text-align: center;
+    border-radius: var(--radius);
+    border: 1px dashed var(--border);
+    color: var(--muted);
+}
+.empty-mini.all-done {
+    color: rgb(var(--n3));
+    border-color: rgba(var(--n3), .5);
+    background: rgba(var(--n3), .08);
+}
+
+.back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: .3rem;
+    font-size: .85rem;
+    text-decoration: none;
+    color: var(--muted);
+}
+.back-link:hover { color: rgb(var(--n1)); }
+
+.done-hint { font-size: .85rem; margin-bottom: 1.2rem; }
+
+/* ---------- فرم‌های خطی کوچک ---------- */
+.inline-form { display: flex; gap: .5rem; align-items: center; }
+.inline-form input {
+    padding: .35rem .8rem;
+    border-radius: 10px;
+    outline: none;
+    background: var(--input);
+    border: 1px solid var(--border);
+    color: var(--text);
+    min-width: 0;
+}
+.inline-form input:focus { border-color: rgb(var(--n1)); }
+.inline-form input::placeholder { color: var(--muted); }
+
+/* ---------- منوی کناری ---------- */
+.player-bottom { display: flex; justify-content: space-between; align-items: center; }
+.streak { color: rgb(var(--n4)); font-weight: 700; }
+.side-proj {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: 150px;
+}
+.side-bottom { display: flex; flex-direction: column; gap: .6rem; }
+.btn-neon.is-current {
+    background: rgba(var(--n1), .14);
+}
+
+/* ---------- بنر پیشرفت امروز ---------- */
+.today-banner {
+    padding: 1rem 1.2rem;
+    border-radius: var(--radius);
+    margin-bottom: 1rem;
+    background: var(--card);
+    border: 1px solid var(--border);
+    backdrop-filter: blur(10px);
+    box-shadow: 0 0 20px rgba(var(--n3), calc(.15 * var(--glow)));
+}
+.today-info { display: flex; justify-content: space-between; margin-bottom: .5rem; }
+.today-info span { color: rgb(var(--n3)); font-weight: 700; }
+
+/* ---------- پنل افزودن ---------- */
+.add-panel { margin-bottom: 2rem; }
+.add-panel .add-bar { margin-bottom: .8rem; }
+
+.kind-picker, .days, .presets { display: flex; flex-wrap: wrap; gap: .5rem; align-items: center; }
+
+.kind-chip input, .day-chip input {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+}
+.kind-chip span, .day-chip span {
+    display: inline-flex;
+    align-items: center;
+    gap: .4rem;
+    padding: .3rem .9rem;
+    border-radius: 999px;
+    cursor: pointer;
+    font-size: .88rem;
+    user-select: none;
+    background: var(--input);
+    border: 1px solid var(--border);
+    color: var(--text);
+    transition: all .2s ease;
+}
+.kind-chip span:hover, .day-chip span:hover { border-color: rgb(var(--n1)); }
+.kind-chip input:checked + span {
+    color: var(--on-grad);
+    border-color: transparent;
+    background: linear-gradient(90deg, rgb(var(--n2)), rgb(var(--n1)));
+    box-shadow: 0 0 14px rgba(var(--n2), calc(.5 * var(--glow)));
+}
+.day-chip input:checked + span {
+    color: var(--on-n3);
+    font-weight: 700;
+    background: rgb(var(--n3));
+    border-color: rgb(var(--n3));
+    box-shadow: 0 0 12px rgba(var(--n3), calc(.6 * var(--glow)));
+}
+.kind-chip { position: relative; }
+.day-chip { position: relative; }
+
+.days-picker {
+    margin-top: .8rem;
+    padding: .9rem;
+    border-radius: 14px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    gap: .7rem;
+    animation: pop-in .3s ease both;
+}
+.preset-btn {
+    padding: .2rem .8rem;
+    border-radius: 8px;
+    font-size: .8rem;
+    cursor: pointer;
+    background: transparent;
+    color: rgb(var(--n1));
+    border: 1px solid rgba(var(--n1), .5);
+    transition: all .2s ease;
+}
+.preset-btn:hover { background: rgba(var(--n1), .15); }
+
+/* ---------- انتخاب‌گر دسته ---------- */
+.cat-picker {
+    display: inline-flex;
+    align-items: center;
+    gap: .4rem;
+    margin-inline-start: auto;
+    color: rgb(var(--n3));
+}
+.cat-select, .cat-move select {
+    padding: .25rem .6rem;
+    border-radius: 8px;
+    outline: none;
+    font-size: .85rem;
+    background: var(--input);
+    border: 1px solid var(--border);
+    color: var(--text);
+    max-width: 180px;
+}
+.cat-select:focus, .cat-move select:focus { border-color: rgb(var(--n1)); }
+select option { background: var(--bg-2); color: var(--text); }
+
+.cat-move {
+    display: flex;
+    align-items: center;
+    gap: .4rem;
+    color: var(--muted);
+    font-size: .85rem;
+}
+
+/* ---------- بج نوع تسک ---------- */
+.card-meta { display: flex; flex-wrap: wrap; gap: .4rem; }
+.kind-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: .35rem;
+    padding: .1rem .7rem;
+    border-radius: 999px;
+    font-size: .78rem;
+    font-weight: 600;
+    border: 1px solid currentColor;
+}
+.kind-badge.daily   { color: rgb(var(--n1)); background: rgba(var(--n1), .1); }
+.kind-badge.weekly  { color: rgb(var(--n2)); background: rgba(var(--n2), .1); }
+.kind-badge.project { color: rgb(var(--n3)); background: rgba(var(--n3), .1); }
+.kind-badge.random  { color: var(--muted);   background: var(--input); }
+.kind-badge.cat     { color: rgb(var(--cc)); background: rgba(var(--cc), .12); }
+
+/* خط رنگی بالای کارت بر اساس نوع */
+.task-card.kind-weekly::before  { background: linear-gradient(90deg, rgb(var(--n2)), rgb(var(--n1))); }
+.task-card.kind-project::before { background: linear-gradient(90deg, rgb(var(--n3)), rgb(var(--n1))); }
+.task-card.kind-random::before  { background: var(--border); }
+.task-card.is-done::before      { background: rgb(var(--n3)); }
+
+.foot-done { color: rgb(var(--n3)); margin-inline-start: .6rem; }
+
+/* ---------- گروه دسته‌بندی ---------- */
+.cat-group { margin-bottom: 2.5rem; }
+.c0 { --cc: var(--muted-rgb); }
+.c1 { --cc: var(--n1); }
+.c2 { --cc: var(--n2); }
+.c3 { --cc: var(--n3); }
+.c4 { --cc: var(--n4); }
+
+.cat-head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: .7rem;
+    padding: .6rem 1rem;
+    margin-bottom: 1rem;
+    border-radius: 14px;
+    background: var(--card);
+    border: 1px solid rgba(var(--cc), .45);
+    border-inline-start: 4px solid rgb(var(--cc));
+    backdrop-filter: blur(10px);
+    box-shadow: 0 0 18px rgba(var(--cc), calc(.15 * var(--glow)));
+}
+.cat-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: rgb(var(--cc));
+    box-shadow: 0 0 10px rgba(var(--cc), var(--glow));
+}
+.cat-name { margin: 0; font-size: 1.05rem; font-weight: 800; }
+.cat-count {
+    padding: 0 .6rem;
+    border-radius: 999px;
+    font-size: .8rem;
+    font-weight: 700;
+    color: rgb(var(--cc));
+    background: rgba(var(--cc), .14);
+}
+.cat-add { display: flex; gap: .4rem; margin-inline-start: auto; }
+.cat-add input {
+    padding: .3rem .8rem;
+    border-radius: 10px;
+    outline: none;
+    min-width: 0;
+    width: 220px;
+    background: var(--input);
+    border: 1px solid var(--border);
+    color: var(--text);
+}
+.cat-add input:focus { border-color: rgb(var(--cc)); }
+.cat-add input::placeholder { color: var(--muted); }
+
+/* ---------- کارت پروژه ---------- */
+.project-icon { font-size: 1.8rem; color: rgb(var(--n3)); filter: drop-shadow(0 0 8px rgba(var(--n3), var(--glow))); }
+.project-link { color: inherit; text-decoration: none; }
+.project-link:hover { color: rgb(var(--n1)); }
+.project-card .btn-neon { align-self: flex-start; text-decoration: none; }
+
+/* ---------- گزارش ---------- */
+.times-badge {
+    padding: .1rem .7rem;
+    border-radius: 999px;
+    font-weight: 800;
+    color: rgb(var(--n3));
+    background: rgba(var(--n3), .12);
+    border: 1px solid rgba(var(--n3), .5);
+}
+
+/* ---------- لینک دکمه‌ای ---------- */
+a.btn-neon { text-decoration: none; }
+
+@media (max-width: 575px) {
+    .cat-add { margin-inline-start: 0; width: 100%; }
+    .cat-add input { flex: 1; width: auto; }
+    .cat-picker { margin-inline-start: 0; }
+}
